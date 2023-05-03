@@ -6,24 +6,47 @@ const Table = ({ contacts }) => {
         setFilter(e.target.value);
     };
 
+    const [searchTerm, setSearchTerm] = useState("");
+    const searchCB = (contact) => {
+        contact.name.includes(searchTerm) || contact.email.includes(searchTerm);
+    };
+
     let filteredContacts = [];
     if (filter === "All") {
-        filteredContacts = contacts;
+        filteredContacts = searchTerm ? contacts.filter(searchCB) : contacts;
     } else {
         filteredContacts = contacts.filter(
-            (contact) => contact.group === filter
+            (contact) => contact.group === filter && searchCB(contact)
         );
     }
+
+    // let filteredContacts = contacts.reduce((acc, cur) => {
+    //     if (
+    //         (cur.group === filter && cur.name.includes(searchTerm)) ||
+    //         cur.email.includes(searchTerm)
+    //     ) {
+    //         acc.push(cur);
+    //     }
+    //     return acc;
+    // }, []);
+
     return (
         <>
             <div>
                 Filters:
                 <select value={filter} onChange={handleChange}>
-                    <option value="All">All</option>
+                    {" "}
+                    F<option value="All">All</option>
                     <option value="">None</option>
                     <option value="Home">Home </option>
                     <option value="Office">Office</option>
                 </select>
+                <input
+                    type="search"
+                    placeholder="search"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
             </div>
             <table>
                 <thead>
